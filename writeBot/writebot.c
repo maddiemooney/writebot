@@ -1,20 +1,17 @@
 /* written by Maddie Mooney
  * 
- * here we go hopefully this is the final thing
- * 
  * Jan 10: adding z axis servo
  * Jan 18: changing angles and speed
- * Jan 29: adding serial port shit i hope
- * Feb 01: killing self and adding more serial port stuff 
+ * Jan 29: adding serial port access (hopefully)
+ * Feb 01: more serial port
  * 
- * i am concerned about doing multiple values and stuff
  */
 
 #include <Servo.h>
 
 int zAxisPin = 6;
 Servo zAxis;
-int zAxisAngle = 0; //do i even have to declare this here?? who know
+int zAxisAngle = 0;
 
 //pen up/down function
 void penDown();
@@ -23,6 +20,7 @@ void penUp();
 //stepper library
 
  //x axis
+ //sort of out of order here sorry, but each servo/axis  has 4 pins
  int xcoil1a = 2;
  int xcoil1b = 5;
  int xcoil2a = 3;
@@ -40,14 +38,13 @@ void penUp();
  void yStepPatternForward(int yNumberOfStepsf);
  void yStepPatternBackward(int yNumberOfStepsb);
 
- //letter definitions. maybe also do symbols? not sure if that defines well tho
- //capitals first prob
+ //letter definitions
  void A();
  void B();
  void C();
  void D();
  void E();
- void FF();
+ void FF(); //defined as FF because Arduino has a builtin F(); oops
  void G();
  void H();
  void I();
@@ -71,13 +68,13 @@ void penUp();
  void space();
 
 void setup() {
-  // opening serial port, also, let's die
+  // opening serial port
   Serial.begin(9600);
   //pinMode(13, OUTPUT); //test for serial
   Serial.write('1'); //tells python hello i am ready
   // connecting servo
   zAxis.attach(zAxisPin);
-  // these next ones are for the stepper library thing
+  // stepper library pinModes
   pinMode(xcoil1a, OUTPUT);
   pinMode(xcoil1b, OUTPUT);
   pinMode(xcoil2a, OUTPUT);
@@ -90,11 +87,11 @@ void setup() {
 }
 
 void penDown() {
-  int zAxisAngle = 0; //pointy thing faces up to start
+  int zAxisAngle = 0;
 
   for(zAxisAngle = 0; zAxisAngle <45; zAxisAngle++) {
-    zAxis.write(zAxisAngle); //makes it go ccw 29 degrees
-    delay(25); //good speed?
+    zAxis.write(zAxisAngle); //makes it go ccw 45 degrees
+    delay(25); //change for different speeds
   }
 }
 
@@ -102,25 +99,18 @@ void penUp() {
   int zAxisAngle = 45;
 
   for(zAxisAngle = 45; zAxisAngle >0; zAxisAngle--) {
-    zAxis.write(zAxisAngle); //goes cw 29 degrees
-    delay(25); //good speed?
+    zAxis.write(zAxisAngle); //goes cw 45 degrees
+    delay(25); //change for different speeds
   }
 }
 
-//this next part *should* be rewritten as an importable library but i hate myself so it's just Here (tm)
-/* Jan 11: changed port stuff
- * Jan 18: killed self
- * Jan 18: just. fuckign combine the files chhrist
- * 
- * i have no idea if people put their name on stuff in the real world 
- * but we had to in CS1 so 
- * 
- * Hello here we go let's try to write a stepper motor thing
- * 
- * ¯\_(ツ)_/¯ maybe it will work
+//this next part *should* be rewritten as an importable library
+/* Jan 11: changed port info
+ * Jan 18: uh. changed a LOT. 
+ * Jan 18: combined files now this is in writebot 
  * 
  * the steps listed below are for half steps, so instead of 4 steps,
- * there's 8. congration.
+ * there's 8.
  * 
  * for the motor to go forward, do steps 1->8, for backward, do
  * steps 8->1. this is coded in functions *stepPatternForward and
@@ -456,7 +446,6 @@ void yStepPatternBackward(int yNumberOfStepsb) { //away from arduino
  * so! assuming that letters start penup, above the upper left hand corner. 
  * also let's put 2 between each letter.
  * so like maybe with 40/7 that's like 5 letters per line
- * ffs
  */
 
 void A() {
@@ -523,7 +512,7 @@ void E() {
   yStepPatternBackward(2);
 }
 
-void FF() { //called this because F() is already a function i guess
+void FF() { //called this because  F() is already a function
   penDown();
   xStepPatternBackward(10);
   xStepPatternForward(7);
@@ -773,8 +762,6 @@ void loop() {
    * x backward is pen towards breadboard
    * y forward is pen toward arduino
    * y backward is pen away from arduino
-   * 
-   * (ﾉ◕ヮ◕)ﾉ*:・ﾟ✧. 
    */
    
   /*if(Serial.available() >0) {
@@ -786,93 +773,8 @@ void loop() {
     }
   }*/
 
+ //put whatever letters you want to write here
   A();
-
-  
-
-   // do we really want to do this? another 26 things kill me lol
- 
-   //if (c == '1') {
-    //penDown();
-    //delay(1000);
-    //penUp();
-   //}
-   /*
-   if (readString == '2') {
-    B();
-   }
-   
-   if (readString == '3') {
-    C();
-   }
-   
-   if (readString == '4') {
-    D();
-   }
-   
-   if (readString == '5') {
-    E();
-   }
-   
-   if (readString == '6') {
-    FF();
-   }
-   
-   if (readString == '7') {
-    G();
-   }
-   
-   if (readString == '8') {
-    H();
-   }
-   
-   if (readString == '9') {
-    I();
-   }
-   
-   if (readString == "10") {
-    J();
-   }
-   
-   if (readString == '1') {
-    K();
-   }if (readString == '1') {
-    L();
-   }if (readString == '1') {
-    M();
-   }if (readString == '1') {
-    N();
-   }if (readString == '1') {
-    O();
-   }if (readString == '1') {
-    P();
-   }if (readString == '1') {
-    Q();
-   }if (readString == '1') {
-    R();
-   }if (readString == '1') {
-    S();
-   }if (readString == '1') {
-    T();
-   }if (readString == '1') {
-    U();
-   }if (readString == '1') {
-    V();
-   }if (readString == '1') {
-    W();
-   }if (readString == '1') {
-    X();
-   }if (readString == '1') {
-    Y();
-   }if (readString == '1') {
-    Z();
-   }if (readString == '1') {
-    space();
-   }
-  penUp();*/
   exit(0);
-  /*while(true) {
-    delay(1000);
-  }*/
 }
 
